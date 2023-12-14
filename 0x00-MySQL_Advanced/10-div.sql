@@ -9,6 +9,6 @@ BEGIN
     IF b != 0 THEN
         SET res = a / b;
     END IF;
-    RETURN res
+    RETURN res;
 END $$
 DELIMITER;
