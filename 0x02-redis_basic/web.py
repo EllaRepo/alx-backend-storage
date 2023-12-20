@@ -4,7 +4,7 @@
 import redis
 import requests
 from datetime import timedelta
-from functools import wraps
+from functools import wraps, lru_cache
 
 
 def track_request_count(func):
@@ -18,6 +18,9 @@ def track_request_count(func):
         return func(url)
     return wrapper
 
+
+@track_request_count
+@lru_cache(maxsize=128)
 def get_page(url: str) -> str:
     """uses the requests module to obtain the HTML
        content of a particular URL and returns it
@@ -32,7 +35,8 @@ def get_page(url: str) -> str:
     if result is not None:
         return result.decode('utf-8')
 
-    result = requests.get(url).content.decode('utf-8')
+    response = requests.get(url)
+    result = response.text
 
     redis_store.setex(res_key, timedelta(seconds=10), result)
 
