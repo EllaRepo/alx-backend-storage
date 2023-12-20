@@ -28,6 +28,7 @@ def count_calls(method: Callable) -> Callable:
         return method(self, *args, **kwargs)
     return wrapper
 
+
 def call_history(method: Callable) -> Callable:
     """Counts the number of times a function is called
     Args:
@@ -45,6 +46,7 @@ def call_history(method: Callable) -> Callable:
         return result
     return wrapper
 
+
 def replay(method: Callable) -> None:
     """Replays the history of a function
     Args:
@@ -61,6 +63,7 @@ def replay(method: Callable) -> None:
     for i, o in zip(inputs, outputs):
         print("{}(*{}) -> {}".format(name, i.decode('utf-8'),
                                      o.decode('utf-8')))
+
 
 class Cache:
     """A Cache class
