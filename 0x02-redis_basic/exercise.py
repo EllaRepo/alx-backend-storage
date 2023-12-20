@@ -45,6 +45,22 @@ def call_history(method: Callable) -> Callable:
         return result
     return wrapper
 
+def replay(method: Callable) -> None:
+    """Replays the history of a function
+    Args:
+        method: The function to be decorated
+    Returns:
+        None
+    """
+    name = method.__qualname__
+    cache = redis.Redis()
+    calls = cache.get(name).decode("utf-8")
+    print("{} was called {} times:".format(name, calls))
+    inputs = cache.lrange(name + ":inputs", 0, -1)
+    outputs = cache.lrange(name + ":outputs", 0, -1)
+    for i, o in zip(inputs, outputs):
+        print("{}(*{}) -> {}".format(name, i.decode('utf-8'),
+                                     o.decode('utf-8')))
 
 class Cache:
     """A Cache class
